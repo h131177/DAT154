@@ -48,6 +48,7 @@ namespace Simulation
 
             List<Ellipse> planets = new List<Ellipse> { };
             Ellipse planet;
+            Ellipse parent;
             SolidColorBrush color;
             double x = 0;
             double y = 0;
@@ -57,7 +58,18 @@ namespace Simulation
             foreach (SpaceObject obj in solarSystem)
             {
                 planet = new Ellipse();
+                parent = planet;
                 color = new SolidColorBrush();
+                bool isMooon = false;
+                if(obj.name == "earth")
+                {
+                    parent = planet;
+                }
+                if(obj.name == "moon")
+                {
+                    isMooon = true;
+                    //planet.Parent = parent;
+                }
                 planets.Add(planet);
                 if(obj.objectColor == "red") {
                     color.Color = Color.FromRgb(255, 0, 0);
@@ -74,7 +86,7 @@ namespace Simulation
                 x = t.Item1;
                 y = t.Item2;
           
-                addPlanet(planet, 30, 30, color, x, y);
+                addPlanet(planet, 30, 30, color, x, y, isMooon);
             }
 
             //Skalering
@@ -82,7 +94,6 @@ namespace Simulation
             //double skjermX = (venstre / (hvorLangtSkalJegTegneTilHøyre - hvorLangtSkalJegTegneTilVenstre)) * breddenPåVinduetMitt;
             
             Thickness m = new Thickness(x, y, 0, 0);
-            
 
             timer.Interval = TimeSpan.FromSeconds(0.1);
             timer.Tick += timer_Tick;
@@ -102,17 +113,28 @@ namespace Simulation
                     m.Left = x;
                     m.Top = y;
                     planets[i].Margin = m;
+
                     i++;
                 }
             }
         }
 
-        private void addPlanet(Ellipse myEllipse, int w, int h, SolidColorBrush color, double l, double t) {
+        private void addPlanet(Ellipse myEllipse, int w, int h, SolidColorBrush color, double l, double t, bool isM) {
             Thickness m = new Thickness(l, t, 0, 0);
             myEllipse.Stroke = System.Windows.Media.Brushes.Black;
             myEllipse.Fill = color;
-            myEllipse.HorizontalAlignment = HorizontalAlignment.Center;
-            myEllipse.VerticalAlignment = VerticalAlignment.Center;
+            if (isM)
+            {
+                //Kode for få månen til å rotere rundt jorda TODO
+                //myEllipse.HorizontalAlignment = HorizontalAlignment.Center;
+                //myEllipse.VerticalAlignment = VerticalAlignment.Center;
+                //myEllipse.Parent;
+            } else
+            {
+                myEllipse.HorizontalAlignment = HorizontalAlignment.Center;
+                myEllipse.VerticalAlignment = VerticalAlignment.Center;
+            }
+            
             myEllipse.Width = w;
             myEllipse.Height = h;
             myEllipse.Margin = m;

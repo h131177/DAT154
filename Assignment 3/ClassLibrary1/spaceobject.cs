@@ -32,9 +32,9 @@ namespace SpaceSim {
             //y = Math.Round(Math.Sin(angularVelocity * time) * 20 * Math.Cbrt(orbitalRadius));
 
             x = (int)(1000 / 2 - 30 / 2 +
-                    (Math.Cos(time * 5 * 3.1416 / 180) * orbitalRadius));
+                    (Math.Cos(time * orbitalPeriod * 0.04 * 3.1416 / 180) * orbitalRadius));
             y = (int)(500 / 2 - 30 / 2 +
-                (Math.Sin(time * 5 * 3.1416 / 180) * orbitalRadius));
+                (Math.Sin(time * orbitalPeriod * 0.04 * 3.1416 / 180) * orbitalRadius));
             x *= 0.000003;
             y *= 0.000003;
             return new Tuple<double, double>(x,y);
