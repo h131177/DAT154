@@ -28,37 +28,62 @@ namespace Simulation
         {
             InitializeComponent();
 
-            Star sun = new Star("Sun", 4370005.6, 0, 1392684, 0, "Gul", null);
-            //Planet mercury = new Planet("Mercury", 57909227, 87.97, 0, 0, "Grå", sun);
-            Planet venus = new Planet("Venus", 108200000, 224.70, 0, 0, "Oransje", sun);
-            //Planet earth = new Planet("Earth", 149500000, 365.26, 0, 0, "Blå", sun);
-            //Moon moon = new Moon("Moon", 384000, 27.32, 0, 0, "Grå", earth);
+            Star sun = new Star("Sun", 4370005.6, 0, 1392684, 0, "yellow", null);
+            Planet mercury = new Planet("Mercury", 57909227, 87.97, 0, 0, "green", sun);
+            Planet venus = new Planet("Venus", 108200000, 224.70, 0, 0, "orange", sun);
+            Planet earth = new Planet("Earth", 149500000, 365.26, 0, 0, "red", sun);
+            Moon moon = new Moon("Moon", 384000, 27.32, 0, 0, "grey", earth);
 
-            solarSystem.Add(sun);
-            //solarSystem.Add(mercury);
+            //solarSystem.Add(sun);
+            solarSystem.Add(mercury);
             solarSystem.Add(venus);
-            //solarSystem.Add(earth);
+            solarSystem.Add(earth);
             //solarSystem.Add(moon);
 
             comboBox.Items.Add(sun.name);
-            //comboBox.Items.Add(mercury.name);
-            //comboBox.Items.Add(venus.name);
-            //comboBox.Items.Add(earth.name);
-            //comboBox.Items.Add(moon.name);
+            comboBox.Items.Add(mercury.name);
+            comboBox.Items.Add(venus.name);
+            comboBox.Items.Add(earth.name);
+            comboBox.Items.Add(moon.name);
 
-            Ellipse earth = new Ellipse();
-            SolidColorBrush red = new SolidColorBrush();
-            red.Color = Color.FromRgb(255, 0, 0);
-            addPlanet(earth, 30, 30, red, 400, 300, 0, 0);
+            List<Ellipse> planets = new List<Ellipse> { };
+            Ellipse planet;
+            SolidColorBrush color;
+            double x = 0;
+            double y = 0;
+            double time = 0;
+            Tuple<double, double> t;
+
+            foreach (SpaceObject obj in solarSystem)
+            {
+                planet = new Ellipse();
+                color = new SolidColorBrush();
+                planets.Add(planet);
+                if(obj.objectColor == "red") {
+                    color.Color = Color.FromRgb(255, 0, 0);
+                } else if(obj.objectColor == "green") {
+                    color.Color = Color.FromRgb(0, 255, 0);
+                } else if(obj.objectColor == "yellow") {
+                    color.Color = Color.FromRgb(255, 225, 53);
+                } else if(obj.objectColor == "grey") {
+                    color.Color = Color.FromRgb(132, 132, 130);
+                } else if(obj.objectColor == "orange") {
+                    color.Color = Color.FromRgb(255, 126, 0);
+                }
+                t = obj.calculatePosition(time);
+                x = t.Item1;
+                y = t.Item2;
+          
+                addPlanet(planet, 30, 30, color, x, y);
+            }
 
             //Skalering
             //double venstreSideAvPlaneten = planetenSinX - hvorLangtSkalJegTegneTilVenstre;
             //double skjermX = (venstre / (hvorLangtSkalJegTegneTilHøyre - hvorLangtSkalJegTegneTilVenstre)) * breddenPåVinduetMitt;
-            double x = 0;
-            double y = 0;
-
+            
             Thickness m = new Thickness(x, y, 0, 0);
-            double time = 0;
+            
+
             timer.Interval = TimeSpan.FromSeconds(0.1);
             timer.Tick += timer_Tick;
             timer.Start();
@@ -69,27 +94,25 @@ namespace Simulation
                 //Løkke som oppdaterer posisjon
                 //Oppdaterer x og y
                 time++;
-                x = (int)(myGrid.RenderSize.Width / 2 - earth.Width / 2 +
-                    (Math.Cos(time * 5 * 3.1416 / 180) * venus.orbitalRadius*0.000001));
-                y = (int)(myGrid.RenderSize.Height / 2 - earth.Height / 2 +
-                    (Math.Sin(time * 5 * 3.1416 / 180) * venus.orbitalRadius*0.000001));
-
-                m.Left = x;
-                m.Top = y;
-                //earth.Height += 50;
-                earth.Margin = m;
-                //testE.Height += 50;
+                int i = 0;
+                foreach (SpaceObject obj in solarSystem) {
+                    t = obj.calculatePosition(time);
+                    x = t.Item1;
+                    y = t.Item2;
+                    m.Left = x;
+                    m.Top = y;
+                    planets[i].Margin = m;
+                    i++;
+                }
             }
-
         }
 
-        private void addPlanet(Ellipse myEllipse, int w, int h, SolidColorBrush color, int l, int t, int r, int b) {
-            Thickness m = new Thickness(l, t, r, b);
-            //myEllipse = new Ellipse();
+        private void addPlanet(Ellipse myEllipse, int w, int h, SolidColorBrush color, double l, double t) {
+            Thickness m = new Thickness(l, t, 0, 0);
             myEllipse.Stroke = System.Windows.Media.Brushes.Black;
             myEllipse.Fill = color;
-            myEllipse.HorizontalAlignment = HorizontalAlignment.Left;
-            myEllipse.VerticalAlignment = VerticalAlignment.Top;
+            myEllipse.HorizontalAlignment = HorizontalAlignment.Center;
+            myEllipse.VerticalAlignment = VerticalAlignment.Center;
             myEllipse.Width = w;
             myEllipse.Height = h;
             myEllipse.Margin = m;

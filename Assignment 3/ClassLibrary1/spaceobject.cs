@@ -27,10 +27,16 @@ namespace SpaceSim {
             // orbital_period
             double x = 0;
             double y = 0;
-            double angularVelocity = ((2 * Math.PI) / orbitalPeriod);
+            //double angularVelocity = ((2 * Math.PI) / orbitalPeriod);
+            //x = Math.Round(Math.Cos(angularVelocity * time) * 20 * Math.Cbrt(orbitalRadius));
+            //y = Math.Round(Math.Sin(angularVelocity * time) * 20 * Math.Cbrt(orbitalRadius));
 
-            x = Math.Round(Math.Cos(angularVelocity * time) * 20 * Math.Cbrt(orbitalRadius));
-            y = Math.Round(Math.Sin(angularVelocity * time) * 20 * Math.Cbrt(orbitalRadius));
+            x = (int)(1000 / 2 - 30 / 2 +
+                    (Math.Cos(time * 5 * 3.1416 / 180) * orbitalRadius));
+            y = (int)(500 / 2 - 30 / 2 +
+                (Math.Sin(time * 5 * 3.1416 / 180) * orbitalRadius));
+            x *= 0.000003;
+            y *= 0.000003;
             return new Tuple<double, double>(x,y);
         }
 
